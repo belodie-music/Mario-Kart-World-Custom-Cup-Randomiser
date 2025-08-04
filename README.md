@@ -1,6 +1,13 @@
 # Mario-Kart-World-Custom-Cup-Randomiser
 This project creates a set of eight random cups for Mario Kart World.\
-These cups are represented by HashMap<Integer, String> objects, and functions exist to print their contents, return a single cup, or return a HashMap<String, HashMap<Integer, String>> that contains every cup.
+These cups are represented by HashMap<Integer, String> objects, and functions exist to print their contents, return a single cup, or return a HashMap<String, HashMap<Integer, String>> that contains every cup.\
+Every cup must satisfy the following rules:
+1. Each cup must have 4 tracks.
+2. The first track in a cup must be traversed without routes.
+3. The other tracks in a cup must be traversed via a route from the previous track. This route must be selectable in VS Race.
+4. Every track must be represented at least once.
+5. The remaining two slots must be filled by different tracks, and these tracks must use different layouts in each slot.
+6. The Special Cup must end with Rainbow Road.
 
 # Randomiser.java
 This is the actual randomiser class.
