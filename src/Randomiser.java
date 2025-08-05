@@ -21,7 +21,6 @@ public class Randomiser {
     private static ArrayList<RouteInfo> remainingUniqueTracks;
     private static ArrayList<RouteInfo> remainingDuplicateTracks;
 
-    private static ArrayList<String> allTracks;
     private static ArrayList<String> unusedTracks;
     private static ArrayList<String> usedOnceTracks;
 
@@ -64,6 +63,8 @@ public class Randomiser {
                 RouteInfo nextRouteInfo = new RouteInfo(routeElements[originColumn], routeElements[destinationColumn], routeElements[routeNumberColumn]);
                 allRoutes.add(nextRouteInfo);
             }
+            routeBufferedReader.close();
+            routeFileReader.close();
         } catch (FileNotFoundException f) {
             System.out.println("routes.csv not found. Please ensure that the routes file is present and contained within the same folder as this file.");
             throw f;
@@ -500,9 +501,6 @@ public class Randomiser {
 
         if (!unusedTracks.isEmpty()) {
             return false;
-        } else {
-            ArrayList<String> repeatedTracks = new ArrayList<>(allTracks);
-            repeatedTracks.removeAll(usedOnceTracks);
         }
 
         ArrayList<HashMap<Integer, String>> cupOrder = new ArrayList<>();
@@ -554,7 +552,6 @@ public class Randomiser {
         remainingUniqueTracks.addAll(allRoutes);
         remainingDuplicateTracks.addAll(allRoutes);
 
-        allTracks = new ArrayList<>();
         unusedTracks = new ArrayList<>();
         usedOnceTracks = new ArrayList<>();
 
@@ -564,7 +561,6 @@ public class Randomiser {
                 unusedTracks.add(destination);
             }
         }
-        allTracks.addAll(unusedTracks);
 
         boolean validRandomisation = randomiseCups();;
         while (!validRandomisation) {
@@ -604,6 +600,62 @@ public class Randomiser {
         }
         else {
             System.out.println("Randomisation is not complete - either it has not begun or it is still in-progress.");
+        }
+    }
+
+    /**
+     * If randomisation is complete, saves the cups that were created to src/Random Cups YYYY-MM-DD hh:mm:ss.txt. Otherwise, prints an error message.
+     */
+    public static void saveRandomisedCups() {
+        saveRandomisedCups("src/Random Cups YYYY-MM-DD hh:mm:ss.txt");
+    }
+
+    /**
+     * If randomisation is complete, saves the cups that were created. Otherwise, prints an error message.<p>
+     * If a file already exists with the provided name, the name of the saved file will have {@code " (1)"} appended.
+     * @param pathname The path and name for the file that is saved. ".txt" will automatically be appended if not present.
+     */
+    public static void saveRandomisedCups(String pathname) {
+        if (!complete) {
+            System.out.println("Randomisation is not complete - either it has not begun or it is still in-progress.");
+            return;
+        }
+        if (!pathname.endsWith(".txt")) {
+            pathname += ".txt";
+        }
+        File toSave = new File(pathname);
+        try {
+            while (!toSave.createNewFile()) {
+                toSave = new File(pathname.substring(0,pathname.length()-4)+" (1).txt");
+            }
+            if (!toSave.canWrite()) {
+                if (!toSave.setWritable(true)) {
+                    System.out.println("The file was created; however, this program does not have permission to write to it.");
+                    return;
+                }
+            }
+            FileWriter cupFileWriter = new FileWriter(toSave);
+            BufferedWriter cupBufferedWriter = new BufferedWriter(cupFileWriter);
+            cupBufferedWriter.write("Mushroom Cup: " + mushroomCup.get(0) + ", " + mushroomCup.get(1) + ", " + mushroomCup.get(2) + ", " + mushroomCup.get(3));
+            cupBufferedWriter.newLine();
+            cupBufferedWriter.write("Flower Cup: " + flowerCup.get(0) + ", " + flowerCup.get(1) + ", " + flowerCup.get(2) + ", " + flowerCup.get(3));
+            cupBufferedWriter.newLine();
+            cupBufferedWriter.write("Star Cup: " + starCup.get(0) + ", " + starCup.get(1) + ", " + starCup.get(2) + ", " + starCup.get(3));
+            cupBufferedWriter.newLine();
+            cupBufferedWriter.write("Shell Cup: " + shellCup.get(0) + ", " + shellCup.get(1) + ", " + shellCup.get(2) + ", " + shellCup.get(3));
+            cupBufferedWriter.newLine();
+            cupBufferedWriter.write("Banana Cup: " + bananaCup.get(0) + ", " + bananaCup.get(1) + ", " + bananaCup.get(2) + ", " + bananaCup.get(3));
+            cupBufferedWriter.newLine();
+            cupBufferedWriter.write("Leaf Cup: " + leafCup.get(0) + ", " + leafCup.get(1) + ", " + leafCup.get(2) + ", " + leafCup.get(3));
+            cupBufferedWriter.newLine();
+            cupBufferedWriter.write("Lightning Cup: " + lightningCup.get(0) + ", " + lightningCup.get(1) + ", " + lightningCup.get(2) + ", " + lightningCup.get(3));
+            cupBufferedWriter.newLine();
+            cupBufferedWriter.write("Special Cup: " + specialCup.get(0) + ", " + specialCup.get(1) + ", " + specialCup.get(2) + ", " + specialCup.get(3));
+            cupBufferedWriter.close();
+            cupFileWriter.close();
+        } catch (IOException e) {
+            System.out.println("An IO exception has occurred.");
+            System.out.println("The accompanying message is as follows: "+e.getMessage());
         }
     }
 

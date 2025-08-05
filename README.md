@@ -23,6 +23,15 @@ This is responsible for creating a set of eight random cups. No output is given.
 If randomisation is complete, every cups that was created will be printed. An example of one cup that could be output by this function is as follows:
 > Mushroom Cup: Mario Bros. Circuit, Crown City, Whistlestop Summit, DK Spaceport
 
+### void saveRandomisedCups(String pathname)
+If randomisation is complete, this saves the cups that were created in a .txt file as specified by `pathname`.\
+If randomisation is not complete or the file is unable to be saved for any reason, this instead prints an error message.\
+If a file already exists with the provided name, the name of the saved file will have `" (1)"` appended.
+If `.txt` is not present at the end of the pathname, it will automatically be appended.
+
+### void sameRandomisedCups()
+Acts identically to `void saveRandomisedCups(String pathname)`, except that instead of using a provided name and path, it will always attempt to save to `src/Random Cups YYYY-MM-DD hh:mm:ss.txt`.
+
 ### HashMap<Integer, String> getMushroomCup()
 If randomisation is complete, this returns a HashMap<Integer, String> containing the Mushroom Cup tracks.\
 If randomisation is not complete (either due to one not having taken place or due to randomisation currently being in-progress), this instead prints an error message and returns an empty HashMap.
