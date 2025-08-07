@@ -14,7 +14,7 @@ This is the actual randomiser class.
 
 ## Functions
 ### void main(String[] args)
-This acts as a main function, allowing the project to be run without external input. It will create a set of eight random cups, then print them.
+This acts as a main function, allowing the project to be run without external input. It will create a set of eight random cups, then print them and save them as `Random Cups.csv`.
 
 ### void randomise()
 This is responsible for creating a set of eight random cups. No output is given.
@@ -29,8 +29,17 @@ If randomisation is not complete or the file is unable to be saved for any reaso
 If a file already exists with the provided name, the name of the saved file will have `" (1)"` appended.
 If `.txt` is not present at the end of the pathname, it will automatically be appended.
 
-### void sameRandomisedCups()
-Acts identically to `void saveRandomisedCups(String pathname)`, except that instead of using a provided name and path, it will always attempt to save to `src/Random Cups YYYY-MM-DD hh:mm:ss.txt`.
+### void saveRandomisedCups()
+Acts identically to `void saveRandomisedCups(String pathname)`, except that instead of using a provided name and path, it will always attempt to save to `Random Cups YYYY-MM-DD hh:mm:ss.txt`.
+
+### void saveRandomisedCupsAsCSV(String pathname)
+If randomisation is complete, this saves the cups that were created in a .csv file as specified by `pathname`.\
+If randomisation is not complete or the file is unable to be saved for any reason, this instead prints an error message.\
+If a file already exists with the provided name, the name of the saved file will have `" (1)"` appended.
+If `.csv` is not present at the end of the pathname, it will automatically be appended.
+
+### void saveRandomisedCupsAsCSV()
+Acts identically to `void saveRandomisedCupsAsCSV(String pathname)`, except that instead of using a provided name and path, it will always attempt to save to `Random Cups YYYY-MM-DD hh:mm:ss.csv`.
 
 ### HashMap<Integer, String> getMushroomCup()
 If randomisation is complete, this returns a HashMap<Integer, String> containing the Mushroom Cup tracks.\

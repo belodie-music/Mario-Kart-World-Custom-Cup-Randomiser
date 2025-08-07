@@ -1,4 +1,5 @@
 import java.io.*;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -44,7 +45,7 @@ public class Randomiser {
     private static ArrayList<RouteInfo> GetRouteArrayList() throws IOException {
         ArrayList<RouteInfo> allRoutes = new ArrayList<>();
         try {
-            File routeCSV = new File("src/routes.csv");
+            File routeCSV = new File("routes/routes.csv");
             FileReader routeFileReader = new FileReader(routeCSV);
             BufferedReader routeBufferedReader = new BufferedReader(routeFileReader);
             String nextRoute = routeBufferedReader.readLine();
@@ -604,10 +605,11 @@ public class Randomiser {
     }
 
     /**
-     * If randomisation is complete, saves the cups that were created to src/Random Cups YYYY-MM-DD hh:mm:ss.txt. Otherwise, prints an error message.
+     * If randomisation is complete, saves the cups that were created to Random Cups YYYY-MM-DD hh:mm:ss.txt. Otherwise, prints an error message.
      */
     public static void saveRandomisedCups() {
-        saveRandomisedCups("src/Random Cups YYYY-MM-DD hh:mm:ss.txt");
+        LocalDateTime now = LocalDateTime.now();
+        saveRandomisedCups("Random Cups "+now.getYear()+"-"+now.getMonthValue()+"-"+now.getDayOfMonth()+" "+now.getHour()+":"+now.getMinute()+":"+now.getSecond()+".txt");
     }
 
     /**
@@ -651,6 +653,63 @@ public class Randomiser {
             cupBufferedWriter.write("Lightning Cup: " + lightningCup.get(0) + ", " + lightningCup.get(1) + ", " + lightningCup.get(2) + ", " + lightningCup.get(3));
             cupBufferedWriter.newLine();
             cupBufferedWriter.write("Special Cup: " + specialCup.get(0) + ", " + specialCup.get(1) + ", " + specialCup.get(2) + ", " + specialCup.get(3));
+            cupBufferedWriter.close();
+            cupFileWriter.close();
+        } catch (IOException e) {
+            System.out.println("An IO exception has occurred.");
+            System.out.println("The accompanying message is as follows: "+e.getMessage());
+        }
+    }
+
+    /**
+     * If randomisation is complete, saves the cups that were created to Random Cups YYYY-MM-DD hh:mm:ss.csv. Otherwise, prints an error message.
+     */
+    public static void saveRandomisedCupsAsCSV() {
+        LocalDateTime now = LocalDateTime.now();
+        saveRandomisedCupsAsCSV("Random Cups "+now.getYear()+"-"+now.getMonthValue()+"-"+now.getDayOfMonth()+" "+now.getHour()+":"+now.getMinute()+":"+now.getSecond()+".csv");
+    }
+
+    /**
+     * If randomisation is complete, saves the cups that were created. Otherwise, prints an error message.<p>
+     * If a file already exists with the provided name, the name of the saved file will have {@code " (1)"} appended.
+     * @param pathname The path and name for the file that is saved. ".txt" will automatically be appended if not present.
+     */
+    public static void saveRandomisedCupsAsCSV(String pathname) {
+        if (!complete) {
+            System.out.println("Randomisation is not complete - either it has not begun or it is still in-progress.");
+            return;
+        }
+        if (!pathname.endsWith(".csv")) {
+            pathname += ".csv";
+        }
+        File toSave = new File(pathname);
+        try {
+            while (!toSave.createNewFile()) {
+                toSave = new File(pathname.substring(0,pathname.length()-4)+" (1).csv");
+            }
+            if (!toSave.canWrite()) {
+                if (!toSave.setWritable(true)) {
+                    System.out.println("The file was created; however, this program does not have permission to write to it.");
+                    return;
+                }
+            }
+            FileWriter cupFileWriter = new FileWriter(toSave);
+            BufferedWriter cupBufferedWriter = new BufferedWriter(cupFileWriter);
+            cupBufferedWriter.write(mushroomCup.get(0) + "," + mushroomCup.get(1) + "," + mushroomCup.get(2) + "," + mushroomCup.get(3));
+            cupBufferedWriter.newLine();
+            cupBufferedWriter.write(flowerCup.get(0) + "," + flowerCup.get(1) + "," + flowerCup.get(2) + "," + flowerCup.get(3));
+            cupBufferedWriter.newLine();
+            cupBufferedWriter.write(starCup.get(0) + "," + starCup.get(1) + "," + starCup.get(2) + "," + starCup.get(3));
+            cupBufferedWriter.newLine();
+            cupBufferedWriter.write(shellCup.get(0) + "," + shellCup.get(1) + "," + shellCup.get(2) + "," + shellCup.get(3));
+            cupBufferedWriter.newLine();
+            cupBufferedWriter.write(bananaCup.get(0) + "," + bananaCup.get(1) + "," + bananaCup.get(2) + "," + bananaCup.get(3));
+            cupBufferedWriter.newLine();
+            cupBufferedWriter.write(leafCup.get(0) + "," + leafCup.get(1) + "," + leafCup.get(2) + "," + leafCup.get(3));
+            cupBufferedWriter.newLine();
+            cupBufferedWriter.write(lightningCup.get(0) + "," + lightningCup.get(1) + "," + lightningCup.get(2) + "," + lightningCup.get(3));
+            cupBufferedWriter.newLine();
+            cupBufferedWriter.write(specialCup.get(0) + "," + specialCup.get(1) + "," + specialCup.get(2) + "," + specialCup.get(3));
             cupBufferedWriter.close();
             cupFileWriter.close();
         } catch (IOException e) {
@@ -778,5 +837,6 @@ public class Randomiser {
     public static void main(String[] args) {
         randomise();
         printRandomisedCups();
+        saveRandomisedCupsAsCSV("Random Cups.csv");
     }
 }
